@@ -1,70 +1,74 @@
 =begin
-----------------------------------------------------------------------------
+================================================================================
 scraper.rb
-written by: William Ersing
+Written by: William Ersing
 
-This program extracts country-specific population data from wikipedia. The
-data is stored in a hash. Users are asked to enter the name of a specific
-country, the population of that country is then displayed on the screen. The
-user can also opt to see the entire list of countries and populations.
-----------------------------------------------------------------------------
+This program extracts country-specific population data from wikipedia. The data
+is strored in a hash. Users are asked to enter the name of a specific country,
+the population of that country is then displayed on the screen. The user can
+also opt to see the entire list of countries and populations.
+================================================================================
 =end
 
 require 'rubygems'
 require 'nokogiri'
 require 'open-uri'
 
-url = "http://en.wikipedia.org/wiki/List_of_countries_by_population"
-doc = Nokogiri::HTML(open(url))
+# This method takes a url argument and returns a hash that contains the extracted
+# url data. The key/value pairs are countries/populations.
+def fill_hash(url)
+    @url = url
+    countries = Array.new
+    populations = Array.new
+    country_hash = {}
 
-countries = Array.new
-populations = Array.new
-country_list = {}
+    doc = Nokogiri::HTML(open(@url))
+    doc.css('table.wikitable tr:nth-child(2)~tr').each do |item|
+	countries << item.at_css('td:nth-child(2) a:nth-child(2)')['title']
+	populations << item.at_css('td:nth-child(3)').text
+    end
 
-doc.css('table.wikitable tr:nth-child(2)~tr').each do |item|
-    countries << item.at_css('td:nth-child(2) a:nth-child(2)')['title']
-    populations << item.at_css('td:nth-child(3)').text
+    @countries = countries
+    @populations = populations
+
+    (0..@countries.length - 1).each do |index|
+	country_hash[@countries[index]] = @populations[index]
+    end
+    return country_hash
 end
 
-@countries=countries
-@populations=populations
+# This method takes a hash argument and provides a user interface that loops
+# until the user elects to quit.
+def ui(hash)
+    selection = ''
+    puts "\n~~~~~~~~~~ POPULATIONS ~~~~~~~~~~"
 
-(0..@countries.length - 1).each do |index|
-    country_list[@countries[index]] = @populations[index]
-end
+    until selection == 'Quit' do
+	puts "\n================================="
+	puts "~Enter the name of a country\n~Type 'all' to show all countries\n~Type 'quit' to exit"
+	puts "=================================\n"
 
-=begin
-puts "Here is a list of populations by country\n\n"
-country_list.each do |key, value|
-    puts "#{key}:\t\t#{value}"
-end
-=end
-#==========================================================================
-
-
-selection = '' 
-puts "\n     \\\\\\\\\\\ POPULATIONS /////"
-until selection == 'Quit' do
-    puts "\n================================="
-    puts "~Enter the name of a country\n~Type 'all' to show all countries\n~Type 'quit' to exit" 
-    puts "=================================\n"
-    selection = gets.chomp.split.map(&:capitalize).join(' ')
-    if selection != 'Quit' 
-	if selection == 'All' 
-	    longest_key = country_list.keys.max {|key1, key2| key1.length <=> key2.length}
-	    puts ''	# might not be necessary
-	    country_list.each do |key, value|
-		 printf("%-#{longest_key.length}s %s\n", key, value)
-	    end
-	else
-		#----------------------------------------
-	    if country_list.has_key?(selection)
-		puts "#{selection}: #{country_list[selection]}"
+	selection = gets.chomp.split.map(&:capitalize).join(' ')			# capitalize each word of the input string (this allows user
+											# to enter any combination of capital and lowercase letters)
+	if selection != 'Quit' 
+	    if selection == 'All' 
+		longest_key = hash.keys.max {|key1, key2| key1.length <=> key2.length}	# determine the necessary column width
+		printf("\n\n%-#{longest_key.length}s %s\n", 'Country', 'Population')
+		puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n"
+		hash.each do |key, value|
+		printf("%-#{longest_key.length}s %s\n", key, value)			# column alignment formatting
+		end
 	    else
-		puts "#{selection} was not found"
+		if hash.has_key?(selection)
+		    puts "\n#{selection} has a total population of #{hash[selection]}"
+		else
+		    puts "\n#{selection} was not found"
+		end
 	    end
-		#----------------------------------------
 	end
     end
 end
+
+country_list = fill_hash('http://en.wikipedia.org/wiki/List_of_countries_by_population')
+ui(country_list)
 
