@@ -14,7 +14,7 @@ require 'rubygems'
 require 'nokogiri'
 require 'open-uri'
 
-# This method takes a url argument and returns a hash that contains the extracted
+# Takes a url argument and returns a hash that contains the extracted
 # url data. The key/value pairs are countries/populations.
 def fill_hash(url)
     @url = url
@@ -37,7 +37,7 @@ def fill_hash(url)
     return country_hash
 end
 
-# This method takes a hash argument and provides a user interface that loops
+# Takes a hash argument and provides a user interface that loops
 # until the user elects to quit.
 def ui(hash)
     selection = ''
