@@ -1,4 +1,4 @@
-ruby_scraper
+scraper
 ============
 
 This is a project from my Programming Languages course. It is a
