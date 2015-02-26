@@ -1,4 +1,4 @@
-#Scraper
+#Populations Scraper
 
 This is a project from my Programming Languages course (Spring 2015).
 It is a simple web scraper that extracts population data for each
