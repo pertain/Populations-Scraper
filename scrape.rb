@@ -4,8 +4,8 @@ scraper.rb
 Written by: William Ersing
 
 This program extracts country-specific population data from wikipedia. The data
-is strored in a hash. Users are asked to enter the name of a specific country,
-the population of that country is then displayed on the screen. The user can
+is strored in a hash. Users are asked to enter the name of a specific country.
+The population of that country is then displayed on the screen. The user can
 also opt to see the entire list of countries and populations.
 ================================================================================
 =end
