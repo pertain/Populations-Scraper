@@ -24,15 +24,15 @@ def fill_hash(url)
 
     doc = Nokogiri::HTML(open(@url))
     doc.css('table.wikitable tr:nth-child(2)~tr').each do |item|
-	countries << item.at_css('td:nth-child(2) a:nth-child(2)')['title']
-	populations << item.at_css('td:nth-child(3)').text
+    countries << item.at_css('td:nth-child(2) a:nth-child(2)')['title']
+    populations << item.at_css('td:nth-child(3)').text
     end
 
     @countries = countries
     @populations = populations
 
     (0..@countries.length - 1).each do |index|
-	country_hash[@countries[index]] = @populations[index]
+    country_hash[@countries[index]] = @populations[index]
     end
     return country_hash
 end
@@ -44,27 +44,27 @@ def ui(hash)
     puts "\n~~~~~~~~~~ POPULATIONS ~~~~~~~~~~"
 
     until selection == 'Quit' do
-	puts "\n================================="
-	puts "~Enter the name of a country\n~Type 'all' to show all countries\n~Type 'quit' to exit"
-	puts "=================================\n"
+    puts "\n================================="
+    puts "~Enter the name of a country\n~Type 'all' to show all countries\n~Type 'quit' to exit"
+    puts "=================================\n"
 
-	selection = gets.chomp.split.map(&:capitalize).join(' ')    # capitalize input string
-	if selection != 'Quit' 
-	    if selection == 'All' 
-		longest_key = hash.keys.max {|key1, key2| key1.length <=> key2.length}	# determine col width
-		printf("\n\n%-#{longest_key.length}s %s\n", 'Country', 'Population')
-		puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n"
-		hash.each do |key, value|
-		printf("%-#{longest_key.length}s %s\n", key, value)     # col alignment
-		end
-	    else
-		if hash.has_key?(selection)
-		    puts "\n#{selection} has a total population of #{hash[selection]}"
-		else
-		    puts "\n#{selection} was not found"
-		end
+    selection = gets.chomp.split.map(&:capitalize).join(' ')    # capitalize input string
+    if selection != 'Quit' 
+        if selection == 'All' 
+        longest_key = hash.keys.max {|key1, key2| key1.length <=> key2.length}  # determine col width
+        printf("\n\n%-#{longest_key.length}s %s\n", 'Country', 'Population')
+        puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n"
+        hash.each do |key, value|
+        printf("%-#{longest_key.length}s %s\n", key, value)     # col alignment
         end
-	end
+        else
+        if hash.has_key?(selection)
+            puts "\n#{selection} has a total population of #{hash[selection]}"
+        else
+            puts "\n#{selection} was not found"
+        end
+        end
+    end
     end
 end
 
